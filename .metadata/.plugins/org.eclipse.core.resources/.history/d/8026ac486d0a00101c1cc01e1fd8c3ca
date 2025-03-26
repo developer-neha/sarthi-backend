@@ -1,0 +1,5 @@
+package com.avviare.sarthi.service;
+
+public class UserService {
+
+}

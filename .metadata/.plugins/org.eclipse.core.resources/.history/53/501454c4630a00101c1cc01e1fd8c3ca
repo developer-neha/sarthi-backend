@@ -1,0 +1,27 @@
+package com.avviare.sarthi.controller;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.avviare.sarthi.dto.Login;
+
+@RestController
+public class LoginController {
+	
+	Login login = new Login();
+
+	@GetMapping("/")
+	public String  loginUser() {
+		
+		
+		return "Hello";
+	}
+	
+	
+	@GetMapping("/neha")
+	public String  neha() {
+		
+		return "hello neha";
+	}
+	
+}

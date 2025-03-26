@@ -1,0 +1,22 @@
+package com.avviare.sarthi.controller;
+
+
+import com.avviare.sarthi.dto.Register;
+import com.avviare.sarthi.service.RegisterService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/register")
+@CrossOrigin(origins = "http://localhost:5173") // Allow React app access
+public class RegisterController {
+
+    @Autowired
+    private RegisterService registerService;
+
+    @PostMapping("/save")
+    public Register saveUser(@RequestBody Register register) {
+        System.out.println("Received Data: " + register); // Debugging
+        return registerService.saveUser(register); // Save user to database
+    }
+}
