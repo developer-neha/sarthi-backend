@@ -1,36 +1,36 @@
 package com.avviare.sarthi.service;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.avviare.sarthi.dto.User;
 import com.avviare.sarthi.repository.UserRepository;
+
 @Service
 public class UserService {
-
+    
     @Autowired
     private UserRepository userRepository;
 
-    // Register a new user
-    public ResponseEntity<String> registerUser(User user) {
-        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
-            return ResponseEntity.badRequest().body("Username already exists");
-        }
-        userRepository.save(user);
-        return ResponseEntity.ok("User registered successfully");
+//    public String registerUser(User userDto) {
+//        if (userRepository.existsByEmail(userDto.getEmail())) {
+//            return "Email already exists";
+//        }
+//
+//        User user = new User(userDto.getName(), userDto.getEmail(), userDto.getPassword());
+//        userRepository.save(user);
+//        return "User registered successfully";
+//    }
+    
+    public User registerUser(User user) {
+        return userRepository.save(user);
     }
 
-    // Login user by validating credentials
-    public ResponseEntity<String> loginUser(User user) {
-        Optional<User> existingUser = userRepository.findByUsername(user.getUsername());
-        
-        System.out.println("hhh "+existingUser.get().getPassword().equals(user.getPassword()) +" hello "+existingUser.isPresent());
-        if (existingUser.isPresent() && existingUser.get().getPassword().equals(user.getPassword())) {
-            return ResponseEntity.status(200).body("Login successful");
+    public String loginUser(String email, String password) {
+        User existingUser = userRepository.findByEmail(email);
+        if (existingUser != null && existingUser.getPassword().equals(password)) {
+            return "Login successful";
         }
-        return ResponseEntity.status(401).body("Invalid username or password");
+        return "Invalid credentials";
     }
 }

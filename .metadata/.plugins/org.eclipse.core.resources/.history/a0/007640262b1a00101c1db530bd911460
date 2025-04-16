@@ -1,0 +1,73 @@
+package com.avviare.sarthi.controller;
+
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.avviare.sarthi.dto.Product;
+import com.avviare.sarthi.service.ProductService;
+
+@RestController
+@RequestMapping("/api/products")
+public class ProductController {
+
+    @Autowired
+    private ProductService productService;
+
+    private static final String UPLOADED_FOLDER = "uploads/";
+
+    @PostMapping
+    public ResponseEntity<String> uploadProduct(
+            @RequestParam("p_name") String pName,
+            @RequestParam("p_desc") String pDesc,
+            @RequestParam("image") MultipartFile image,
+            @RequestParam("rate") double rate,
+            @RequestParam("discount") double discount,
+            @RequestParam("delivery_date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate deliveryDate,
+            @RequestParam("return_date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate returnDate,
+            @RequestParam("isdeliveryfree") boolean isDeliveryFree,
+            @RequestParam("isreturn") boolean isReturn,
+            @RequestParam("isCOD") boolean isCOD) {
+
+        try {
+            // Handle image upload
+            if (!image.isEmpty()) {
+                byte[] bytes = image.getBytes();
+                Path path = Paths.get(UPLOADED_FOLDER + image.getOriginalFilename());
+                Files.createDirectories(path.getParent());
+                Files.write(path, bytes);
+
+                // Create and populate Product object
+                Product product = new Product();
+                product.setpName(pName);
+                product.setpDesc(pDesc);
+                product.setImagePath(path.toString());
+                product.setRate(rate);
+                product.setDiscount(discount);
+                product.setDeliveryDate(deliveryDate);
+                product.setReturnDate(returnDate);
+                product.setIsDeliveryFree(isDeliveryFree);
+                product.setIsReturn(isReturn);
+                product.setIsCOD(isCOD);
+
+                productService.saveProduct(product);
+
+                return ResponseEntity.ok("Product uploaded successfully!");
+            } else {
+                return ResponseEntity.badRequest().body("Image file is empty.");
+            }
+
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body("Failed to upload product: " + e.getMessage());
+        }
+    }
+}

@@ -1,0 +1,17 @@
+package com.avviare.sarthi.dto;
+
+
+import jakarta.persistence.*;
+
+@Entity
+public class WorkoutRequest  {
+ @Id
+ @GeneratedValue(strategy = GenerationType.IDENTITY)
+ private Long id;
+
+ private String exercise;
+ private int duration;
+ private int caloriesBurned;
+
+ // Getters and setters
+}

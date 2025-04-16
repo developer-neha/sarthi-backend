@@ -1,0 +1,19 @@
+package com.avviare.sarthi.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.avviare.sarthi.dto.Product;
+import com.avviare.sarthi.repository.ProductRepository;
+
+@Service
+public class ProductService {
+
+
+    @Autowired
+    private ProductRepository productRepository;
+
+    public void saveProduct(Product product) {
+        productRepository.save(product);
+    }
+}

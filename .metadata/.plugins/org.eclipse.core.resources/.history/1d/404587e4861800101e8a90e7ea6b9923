@@ -1,0 +1,5 @@
+package com.avviare.sarthi.dto;
+
+public class CallbackRequest {
+
+}

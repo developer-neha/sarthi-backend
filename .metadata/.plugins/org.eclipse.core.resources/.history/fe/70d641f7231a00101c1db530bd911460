@@ -1,0 +1,49 @@
+package com.avviare.sarthi.service;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.avviare.sarthi.dto.Product;
+import com.avviare.sarthi.repository.ProductRepository;
+
+import jakarta.persistence.criteria.Path;
+import lombok.Value;
+
+@Service
+public class ProductService {
+
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Value("${upload.path}")
+    private String uploadPath;
+
+    public Product saveProduct(ProductRequestDTO dto) throws IOException {
+        Product product = new Product();
+        product.setpName(dto.getPName());
+        product.setpDesc(dto.getPDesc());
+        product.setRate(dto.getRate());
+        product.setDiscount(dto.getDiscount());
+        product.setIsCOD(dto.getIsCOD());
+        product.setIsDeliveryFree(dto.getIsDeliveryFree());
+        product.setIsReturn(dto.getIsReturn());
+        product.setDeliveryDate(LocalDate.parse(dto.getDeliveryDate()));
+        product.setReturnDuration(LocalDate.parse(dto.getReturnDuration()));
+
+        if (dto.getImage() != null && !dto.getImage().isEmpty()) {
+            String fileName = UUID.randomUUID() + "_" + dto.getImage().getOriginalFilename();
+            Path filePath = Paths.get(uploadPath, fileName);
+            Files.createDirectories(filePath.getParent());
+            Files.write(filePath, dto.getImage().getBytes());
+            product.setImagePath(fileName);
+        }
+
+        return productRepository.save(product);
+    }
+}
